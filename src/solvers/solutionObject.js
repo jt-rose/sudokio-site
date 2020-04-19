@@ -96,7 +96,7 @@ export function filterBest(solutionList) {
 }
 
 // update answer options for related cells after solving a cell
-function updateRelCell(solvedIndex, sudokuGrid) {
+export function updateRelCell(solvedIndex, sudokuGrid) {
     const removeAnswer = sudokuGrid[solvedIndex];
     const removeAnswerFrom = getOpen(getRelCell(solvedIndex), sudokuGrid).filter(x => x !== solvedIndex);
   
