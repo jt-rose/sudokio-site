@@ -68,7 +68,7 @@ export function getBoxNumber(gridLocation) {
     return boxes.findIndex(x => x.includes(gridLocation));
 }
 
-function includesEach(arr, eachValue) {
+export function includesEach(arr, eachValue) {
     return eachValue.every(x => arr.includes(x));
   }
 
