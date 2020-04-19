@@ -1,7 +1,7 @@
 // Find all groupings of unique combinations by group length, ignoring order
 // Ex: unique pairs of [1,2,3,4] => [1,2], [1,3], [1,4], [2,3], [2,4], [3,4] 
 
-const findGroups = groupLen => base => {
+export const findGroups = groupLen => base => {
     const fn = (update=[], counter=1) => {
       if (counter === groupLen) {
         return update;
