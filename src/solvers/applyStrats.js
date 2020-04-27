@@ -26,7 +26,7 @@ import {
     solveSwordfish,
     solveJellyfish
 } from "./strategies/fish";
-import solveXChain from "./strategies/chains";
+
   
 // Strategies were originally written to apply to isolated parameters
 // (ex: rows, boxes, etc.). This function stores the strategy and applies it
@@ -36,7 +36,7 @@ import solveXChain from "./strategies/chains";
 // and produce every result across the current grid
 // we can then use the filterBest function to find which is the next 
 // preferable (easiest or most effective) step across many similar options
-const solveEach = strategy => arr => sudokuGrid => {
+export const solveEach = strategy => arr => sudokuGrid => {
   const allSolutions = arr.reduce( (solutionList, item) => {
     const solution = strategy(sudokuGrid, item);
     if (solution) {
@@ -58,13 +58,13 @@ const solveNakedQuadFullGrid = solveEach(solveNakedQuad)(CP.allSets);
 const solveHiddenPairFullGrid = solveEach(solveHiddenPair)(CP.allSets);
 const solveHiddenTripleFullGrid = solveEach(solveHiddenTriple)(CP.allSets);
 const solveHiddenQuadFullGrid = solveEach(solveHiddenQuad)(CP.allSets);
-const solveXChainFullGrid = solveEach(solveXChain)(CP.allIndex);
+
   
 // store "standard" strategies that will be applied across the full grid
 // sequentially until a hit is found
 // On the site, non-fullGrid strategies can be applied 
 // to specific cells or params if needed with the original strategy
-const strategyList = {
+export const strategyList = {
   solveSingleOptionFullGrid,
   solveSingleParamFullGrid,
   solveBoxNarrowFullGrid,
@@ -76,15 +76,14 @@ const strategyList = {
   solveHiddenQuadFullGrid,
   solveXWing,
   solveSwordfish,
-  solveJellyfish,
-  solveXChainFullGrid
+  solveJellyfish
 };
 
 // take the strategyList defined above and provide string-format name
 // of strategy to cut off sequence of strategies applied to sudoku grid
 // for example, providing "solveBoxNarrowFullGrid" will reduce sequence of
 // strategies applied to being just singleOption, singleParam, and BoxNarrow
-export function limitStratsTo(strategyString) {
+export const limitStratsTo = strategyString => {
   const upTo = (Object.keys(strategyList).findIndex(x => 
     x.match(strategyString))) + 1;
       
@@ -92,13 +91,14 @@ export function limitStratsTo(strategyString) {
     return false;
   }
   return Object.values(strategyList).slice(0, upTo);
-}
+};
 
   
 // apply each strategy in succesion until a hit is found for one round
-export const applyStrats = (stratsUsed = Object.values(strategyList)) => sudokuGrid => {
+export const applyStrats = (stratsUsed = strategyList) => sudokuGrid => {
   // check if any of the given strategies result in solution - single sweep of grid
-  return stratsUsed.reduce( (prev, strategy) => {
+  const strategies = Object.values(stratsUsed);
+  return strategies.reduce( (prev, strategy) => {
     if (prev !== false) {
       return prev; 
       // first strategy found successful will pass over later strategies

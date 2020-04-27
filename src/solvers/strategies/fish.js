@@ -1,5 +1,4 @@
 import {
-    allIndex,
     cellPath as CP,
     getRow,
     getColumn,
@@ -29,7 +28,7 @@ import * as R from "ramda";
 // find all matches for a certain pairing length in one go.
 const solveFish = (fishLen, description) => sudokuGrid => {
     // find open cells, rows, columns, and answers
-    const openCells = getOpen(allIndex, sudokuGrid);
+    const openCells = getOpen(CP.allIndex, sudokuGrid);
     const possibleAnswers = getUniqueOpenValues(openCells, sudokuGrid);
 
     const openRows = CP.rowSets.map(row => getOpen(row, sudokuGrid));
