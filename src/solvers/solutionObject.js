@@ -109,7 +109,7 @@ export function updateRelCell(solvedIndex, sudokuGrid) {
   }
 
 // update the sudokuGrid by applying the solution and returning a new grid
-export function applySolutionSingle(solution, sudokuGrid) {
+export function applySolutionSingle(sudokuGrid, solution) {
     const updatedGrid = solution.updates.reduce( (grid, item) => 
       item.updatedAnswer.length === 1 ?
           R.update(item.index, item.updatedAnswer[0], grid) :
@@ -123,16 +123,16 @@ export function applySolutionSingle(solution, sudokuGrid) {
 }
 
 // compose function for...
-const applyAll = fn => (arr, sudokuGrid) => 
-  arr.reduce( (grid, item) =>
-      fn(item, grid), sudokuGrid);
+const applyAll = fn => (sudokuGrid, solutionList) => //////////////
+  solutionList.reduce( (grid, solution) =>
+      fn(grid, solution), sudokuGrid);
 
 // apply solution used on array of multiple solutions
 const applySolutionMultiple = applyAll(applySolutionSingle);
 
 // checks if multiple solutions found and apply
-export const applySolution = (solution, sudokuGrid) => {
+export const applySolution = (sudokuGrid, solution) => {
   return solution.length ? 
-    applySolutionMultiple(solution, sudokuGrid) : 
-    applySolutionSingle(solution, sudokuGrid);
+    applySolutionMultiple(sudokuGrid, solution) : 
+    applySolutionSingle(sudokuGrid, solution);
 }

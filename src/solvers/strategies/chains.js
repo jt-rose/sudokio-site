@@ -1,4 +1,7 @@
 import {
+    cellPath as CP
+} from "../cellPath";
+import {
     isOnly,
     formatUpdate,
     formatSolution,
@@ -6,7 +9,10 @@ import {
 } from "../solutionObject";
 
 import {
+    strategyList,
+    solveEach,
     applyStrats,
+    applyStratsUntilDone,
     limitStratsTo
 } from "../applyStrats";
 
@@ -39,12 +45,16 @@ import * as R from "ramda";
 
 const findChainOverlapUpdates = (sudokuGrid, startingPaths, stratsUsed) => {
   // apply strategy to each branch and reject if both false
-  const updatedPaths = startingPaths.map(x => stratsUsed(x));
-  if (updatedPaths.every(x => x === false)) {
+  const solutionsFoundForEach = startingPaths.map(x => stratsUsed(x));
+  if (solutionsFoundForEach.every(x => x === false)) {
     return false;
   }
   // map out updated paths with solutions found or keep old path if no update possible
-  const currentPaths = updatedPaths.map((path, i) => applySolution(path, startingPaths[i]) || startingPaths[i]);
+  const currentPaths = solutionsFoundForEach.map((solutionSet, i) => 
+    solutionSet ?
+    applySolution(startingPaths[i], solutionSet) :
+    startingPaths[i]);
+ 
   // find shared changes
   const holder = R.repeat([],81);
   const sharedUpdates = currentPaths.reduce((prev, curr) => 
@@ -61,8 +71,8 @@ const findChainOverlapUpdates = (sudokuGrid, startingPaths, stratsUsed) => {
 };
   
   
-const chainTemplate = (stratsUsed, answerLen, description) => (cellIndex, sudokuGrid) => {
-  // check for open and reject if cellIndex already solved
+const chainTemplate = (stratsUsed, answerLen, description) => (sudokuGrid, cellIndex) => {
+  // check for open with correct number of options and reject if cellIndex already solved
   if (typeof sudokuGrid[cellIndex] === "number" || sudokuGrid[cellIndex].length !== answerLen) {
     return false;
   }
@@ -71,7 +81,7 @@ const chainTemplate = (stratsUsed, answerLen, description) => (cellIndex, sudoku
     .map(answer => isOnly(answer)) // map answers to remove
     .map(remove => formatUpdate( cellIndex, sudokuGrid, remove) ) // map updates
     .map(update => formatSolution("NA-chainAttempt", cellIndex, update)) // map solutions
-    .map(sol => applySolution(sol, sudokuGrid)); // map starting grids
+    .map(sol => applySolution(sudokuGrid, sol)); // map starting grids
   // find first possible updates based on overlapping chains
   const updatesFound = findChainOverlapUpdates(sudokuGrid, startingPaths, stratsUsed);
   if (!updatesFound) {
@@ -79,6 +89,9 @@ const chainTemplate = (stratsUsed, answerLen, description) => (cellIndex, sudoku
   }
   return formatSolution(description, cellIndex, updatesFound);
 }
-  
-const solveXChain = chainTemplate(applyStrats(limitStratsTo("solveSingleOption")), 2, "X-Chain");
-export default solveXChain;
+
+// solves x-chain on single cell
+export const solveXChain = chainTemplate(applyStrats(limitStratsTo("solveSingleOption")), 2, "X-Chain");
+
+// expands solveXChain to apply across the full grid
+export const solveXChainFullGrid = solveEach(solveXChain)(CP.allIndex);

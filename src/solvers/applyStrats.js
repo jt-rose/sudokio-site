@@ -128,7 +128,7 @@ export const applyStratsUntilDone = (applyStratsCurried = applyStrats()) =>
           ...solution,
           round
         }) );
-  const updatedGrid = applySolution(currentSolution, sudokuGrid);
+  const updatedGrid = applySolution(sudokuGrid, currentSolution);
   return applyStratsUntilDone(applyStratsCurried)(updatedGrid, [...solutionList, solutionWithRound].flat(), round + 1 );
 };
 

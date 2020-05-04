@@ -170,15 +170,15 @@ describe("Generate Solution Object", function() {
 
         const updateA = formatUpdate(40, sudokuGrid, isOnly(5));
         const solutionA = formatSolution("multiParam", 40, updateA);
-        const gridA = applySolution(solutionA, sudokuGrid);
+        const gridA = applySolution(sudokuGrid, solutionA);
 
         const updateB = [54, 72].map(x => formatUpdate(x, sudokuGrid, [2,9]));
         const solutionB = formatSolution("testing123", [54,55,56,63,64,65,72,73,74], updateB);
-        const gridB = applySolution(solutionB, sudokuGrid);
+        const gridB = applySolution(sudokuGrid, solutionB);
 
         const updateC = [63, 72].map(x => formatUpdate(x, sudokuGrid, 3));
         const solutionC = formatSolution("singleParam", 62, updateC);
-        const gridC = applySolution(solutionC, sudokuGrid);
+        const gridC = applySolution(sudokuGrid, solutionC);
 
     it("apply solutions object to solve cells", function() {
       // check cell answer and type before solution
@@ -253,7 +253,7 @@ describe("Generate Solution Object", function() {
         const updateD = formatUpdate(11, sudokuGrid, isOnly(2));
         const solutionD = formatSolution("testing456", 11, updateD);
         const solutionList = [solutionA, solutionC, solutionD];
-        const updatedGrid = applySolution(solutionList, sudokuGrid);
+        const updatedGrid = applySolution(sudokuGrid, solutionList);
       it("update all solutions consecutively and return new grid", function() {
     // check cell answer and type before solution
     // Solution A

@@ -82,7 +82,7 @@ describe("Solve Hidden Pairings", function() {
             assert.sameOrderedMembers(SL1.updates[2].currentAnswer, [1,4,6]);
             assert.sameOrderedMembers(SL1.updates[2].updatedAnswer, [1,6]);
     
-            const updatedGrid = applySolution(SL1, hiddenTripleGrid);
+            const updatedGrid = applySolution(hiddenTripleGrid, SL1);
             const count3s = getOpen(getBox(23),updatedGrid).filter(x => updatedGrid[x].includes(3));
             assert.equal(count3s.length, 1);
         });
@@ -130,7 +130,7 @@ describe("Solve Hidden Pairings", function() {
             assert.sameOrderedMembers(SL1.updates[3].currentAnswer, [1,3,4,5,8]);
             assert.sameOrderedMembers(SL1.updates[3].updatedAnswer, [3,4,8]);
     
-            const updatedGrid = applySolution(SL1, hiddenQuadGrid);
+            const updatedGrid = applySolution(hiddenQuadGrid, SL1);
             const count2s = getOpen(getRow(9),updatedGrid).filter(x => updatedGrid[x].includes(2));
             assert.equal(count2s.length, 1);
         });
