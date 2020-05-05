@@ -69,6 +69,18 @@ describe("Generate Solution Object", function() {
             assert.sameOrderedMembers(update6.currentAnswer, [2,6]);
             assert.sameOrderedMembers(update6.updatedAnswer, [6]);
         });
+        it("valid creation of updates with additional notes", function() {
+            const sudokuGrid = formatGrid(toGridArray(gridString1));
+            const testNotes = "test";
+ 
+            const update4 = formatUpdate(2, sudokuGrid, isOnly([2,4]) );
+            assert.equal(Object.keys(update4).length, 4);
+
+            const update4WithNotes = formatUpdate(2, sudokuGrid, isOnly([2,4]), {testNotes} );
+            assert.equal(Object.keys(update4WithNotes).length, 5);
+            assert.equal(update4WithNotes.testNotes, "test");
+
+        });
     });
     describe("Format Solution Object", function() {
         it("valid data formatting - solve without narrow", function() {
@@ -115,6 +127,19 @@ describe("Generate Solution Object", function() {
         assert.equal(solutionC.narrow.length, 1);
         assert.sameOrderedMembers(solutionC.solved[0].updatedAnswer, [2]);
         assert.equal(solutionC.solved.length, 1);
+        });
+        it("valid creation of solution object with additional notes", function() {
+            const sudokuGrid = formatGrid(toGridArray(gridString1));
+            const updateC = [63, 72].map(x => formatUpdate(x, sudokuGrid, 3));
+            const solutionC = formatSolution("singleParam", 62, updateC);
+            const testNotes = "test";
+ 
+            assert.equal(Object.keys(solutionC).length, 6);
+
+            const solutionCWithNotes = formatSolution("singleParam", 62, updateC, {testNotes} );
+            assert.equal(Object.keys(solutionCWithNotes).length, 7);
+            assert.equal(solutionCWithNotes.testNotes, "test");
+
         });
     });
     describe("Filter the best solution from a list", function() {

@@ -11,23 +11,37 @@ export function isOnly(answerOption) {
 }
 
 // generate object to store cell update info 
-export function formatUpdate(index, sudokuGrid, removal) {
+export function formatUpdate(index, sudokuGrid, removal, additionalNotes=false) {
     const remArray = [].concat(removal); // coerce to array if needed
-    return {
+    if (additionalNotes) {
+      return {
+        index,
+        removal: remArray,
+        currentAnswer: sudokuGrid[index],
+        updatedAnswer: sudokuGrid[index].filter(x => !remArray.includes(x)),
+        ...additionalNotes
+    };
+    } else {
+      return {
         index,
         removal: remArray,
         currentAnswer: sudokuGrid[index],
         updatedAnswer: sudokuGrid[index].filter(x => !remArray.includes(x))
     };
 }
+}
 
 // format solution object
-export function formatSolution(strategy, cellInit, updateCollection) {
+export function formatSolution(strategy, cellInit, updateCollection, additionalNotes=false) {
     const updates = [].concat(updateCollection); // coerce to array if single object
     const narrow = updates.filter(x => x.updatedAnswer.length > 1);
     const solved = updates.filter(x => x.updatedAnswer.length === 1);
     const { removal } = updates[0];
-    return { strategy, cellInit, removal, updates, narrow, solved };
+    if (additionalNotes) {
+    return { strategy, cellInit, removal, updates, narrow, solved, ...additionalNotes };
+    } else {
+      return { strategy, cellInit, removal, updates, narrow, solved };
+    }
 }
 
 // pick the simplest singleOption solutions available from the current set
