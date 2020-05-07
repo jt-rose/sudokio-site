@@ -42,13 +42,42 @@ import * as R from "ramda";
 // The "chainTemplate" function creates the diverging paths
 // and the "findChainOverlapUpdates" function then applies strategies to each
 // and checks for overlapping changes.
+// The getTotalSolutionsWithRounds function updates a data tracking object
+// that shows what updates were found for each sweep of the chain-link
+// for each diverging sudoku grid, which can then be used with the filterbest
+// function to find the easiest solution as well as used for data visualization
+// to demonstrate how the chain-sweep worked
 
-const findChainOverlapUpdates = (sudokuGrid, startingPaths, stratsUsed) => {
+
+const getTotalSolutionsWithRounds = (currentSolutionsFound, allSolutionsFound, currentRound) => {
+    // add current round of chain-sweep to solutionsFound
+  const currentSolutionsWithRound = currentSolutionsFound.map(solutionSet => 
+    solutionSet === false ? false : 
+    solutionSet.map(singleSolution => ({...singleSolution, currentRound}) ));
+
+  // keep updated data on solutions found for each divergent map 
+  // during each sweep of the chain updates (to use for data visualization)
+  const totalSolutionsWithRounds = allSolutionsFound ? 
+    allSolutionsFound.map((solutions, i) => {
+        if (solutions === false || currentSolutionsWithRound[i] === false) {
+            return solutions;
+        } else {
+            return solutions.concat(currentSolutionsWithRound[i]);
+        }
+    }) : currentSolutionsWithRound;
+
+    return totalSolutionsWithRounds;
+}
+
+const findChainOverlapUpdates = (sudokuGrid, startingPaths, stratsUsed, roundUpdates=false, round=1) => {
   // apply strategy to each branch and reject if both false
   const solutionsFoundForEach = startingPaths.map(x => stratsUsed(x));
   if (solutionsFoundForEach.every(x => x === false)) {
     return false;
   }
+
+  const totalSolutionsWithRounds = getTotalSolutionsWithRounds(solutionsFoundForEach, roundUpdates, round);
+
   // map out updated paths with solutions found or keep old path if no update possible
   const currentPaths = solutionsFoundForEach.map((solutionSet, i) => 
     solutionSet ?
@@ -64,10 +93,17 @@ const findChainOverlapUpdates = (sudokuGrid, startingPaths, stratsUsed) => {
       && !R.equals(x.answerOptions, sudokuGrid[i]));
   // if shared change(s) found, return updates for solution object
   if (sharedUpdates.length > 0) {
-    return sharedUpdates.map(x => formatUpdate(x.index, sudokuGrid, isOnly(x.answerOptions)) );
+    const updatesFound = sharedUpdates.map(x => 
+        formatUpdate(x.index, sudokuGrid, isOnly(x.answerOptions) ));
+    return {
+        updatesFound,
+        totalSolutionsWithRounds,
+        totalRounds: round
+    };
   }
+  
   // if no shared changes, attempt next round of updates
-  return findChainOverlapUpdates(sudokuGrid, currentPaths, stratsUsed);
+  return findChainOverlapUpdates(sudokuGrid, currentPaths, stratsUsed, totalSolutionsWithRounds, (round+1));
 };
   
   
@@ -83,11 +119,17 @@ const chainTemplate = (stratsUsed, answerLen, description) => (sudokuGrid, cellI
     .map(update => formatSolution("NA-chainAttempt", cellIndex, update)) // map solutions
     .map(sol => applySolution(sudokuGrid, sol)); // map starting grids
   // find first possible updates based on overlapping chains
-  const updatesFound = findChainOverlapUpdates(sudokuGrid, startingPaths, stratsUsed);
+  const {updatesFound, totalSolutionsWithRounds, totalRounds } = findChainOverlapUpdates(sudokuGrid, startingPaths, stratsUsed);
   if (!updatesFound) {
     return false;
   }
-  return formatSolution(description, cellIndex, updatesFound);
+
+  const additionalSolutionInfo = {
+      startingPaths,
+      totalSolutionsWithRounds,
+      totalRounds
+  };
+  return formatSolution(description, cellIndex, updatesFound, additionalSolutionInfo);
 }
 
 // solves x-chain on single cell

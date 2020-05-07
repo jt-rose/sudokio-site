@@ -4,15 +4,12 @@ import {
     toGridArray
 } from "../cellPath";
 import {
-    applySolution
-} from "../solutionObject";
-import {
     solveXChain,
     solveXChainFullGrid
 } from "./chains";
 
 describe("Solve Force Chains", function() {
-    it("correct force chain of length 2", function() {
+    it("correct force chain of length 2, applied to single cell", function() {
         const xChainGrid = formatGrid(toGridArray("270060540050127080000400270000046752027508410500712908136274895785001024002000107"));
         // cellinit 30, update: cell 22 and 76 remove 3 and 9
         const xChainAnswer = solveXChain(xChainGrid, 30);
@@ -23,49 +20,72 @@ describe("Solve Force Chains", function() {
         assert.equal(xChainAnswer.updates[1].index, 76);
         assert.sameOrderedMembers(xChainAnswer.updates[1].currentAnswer, [3,5,8,9]);
         assert.sameOrderedMembers(xChainAnswer.updates[1].updatedAnswer, [5,8]);
-
+    });
+    it("correct force chain of length 2, applied to full grid", function() {
+        const xChainGrid = formatGrid(toGridArray("270060540050127080000400270000046752027508410500712908136274895785001024002000107"));
         const xChainFullGridAnswer = solveXChainFullGrid(xChainGrid);
-        xChainFullGridAnswer.forEach(x => console.log(x))
-        //console.log(xChainFullGridAnswer)
-        //console.log(xChainFullGridAnswer[0].index)
-        //console.log(xChainFullGridAnswer[0].updates)
-        //console.log(xChainFullGridAnswer[1].index)
-        //console.log(xChainFullGridAnswer[1].updates)
-        
-        //const firstUpdate = applySolution(xChainAnswer, xChainGrid);
-        //const xChainAnswer2 = solveXChain(30, firstUpdate);
-        //console.log(xChainAnswer2);
-        //console.log(xChainAnswer2.updates);
-        //const secondUpdate = applySolution(xChainAnswer2, firstUpdate);
-        //const xChainAnswer3 = solveXChain(30, secondUpdate);
-        //console.log(xChainAnswer3);
-        //console.log(xChainAnswer3.updates.map(x => x.updatedAnswer));
-        //const thirdUpdate = applySolution(xChainAnswer3, secondUpdate);
-        //const xChainAnswer4 = solveXChain(30, thirdUpdate);
-        //console.log(xChainAnswer4);
-        //console.log(xChainAnswer4.updates.map(x => x.updatedAnswer));
-        //const fourthUpdate = applySolution(xChainAnswer4, thirdUpdate);
-        //const xChainAnswer5 = solveXChain(30, fourthUpdate);
-        //console.log(xChainAnswer5);
-        //console.log(xChainAnswer5.updates.map(x => x.updatedAnswer));
-        //const fifthUpdate = applySolution(xChainAnswer5, fourthUpdate);
-        //const xChainAnswer6 = solveXChain(30, fifthUpdate);
-        //console.log(xChainAnswer6);
-        //console.log(xChainAnswer6.updates.map(x => x.updatedAnswer));
-        //const sixthUpdate = applySolution(xChainAnswer6, fifthUpdate);
-        //const xChainAnswer7 = solveXChain(30, sixthUpdate);
-        //console.log(xChainAnswer7);
-        //console.log(xChainAnswer7.updates.map(x => x.updatedAnswer));
-        //const seventhUpdate = applySolution(xChainAnswer7, sixthUpdate);
-        //const xChainAnswer8 = solveXChain(30, seventhUpdate);
-        //console.log(xChainAnswer8);
-        //console.log(xChainAnswer8.updates.map(x => x.updatedAnswer));
-        //const eighthUpdate = applySolution(xChainAnswer8, seventhUpdate);
-        //const xChainAnswer9 = solveXChain(30, eighthUpdate);
-        //console.log(xChainAnswer9);
-        //console.log(xChainAnswer9.updates.map(x => x.updatedAnswer));
+
+        assert.equal(xChainFullGridAnswer.length, 12);
+
+        const expectedCellsWithXChain = [15, 30, 40, 44, 46, 47, 52, 67, 69, 72, 73, 79];
+        const cellsWithXChainFound = xChainFullGridAnswer.map(solution => solution.cellInit);
+        assert.sameOrderedMembers(expectedCellsWithXChain, cellsWithXChainFound);
+
+        const expectedRoundsTaken = [3, 2, 1, 3, 3, 4, 3, 1, 2, 1, 1, 3];
+        const actualRoundsTaken = xChainFullGridAnswer.map(solution => solution.totalRounds);
+        assert.sameOrderedMembers(expectedRoundsTaken, actualRoundsTaken);
+
+        const expectedFirstUpdatesWithCurrentAnswers = [
+            [3,5,8,9],//1
+            [3,5,8,9],//2
+            [3,5,8,9],//3
+            [3,6,9],//4
+            [1,3,6,9],//5
+            [3,6,9],//6
+            [3,4,6,9],//7
+            [3,5,8,9],//8
+            [3,5,8,9],//9 
+            [3,6,8,9],//10
+            [3,6,8,9],//11
+            [3,5,8,9]//12
+        ];
+        const actualFirstUpdatesWithCurrentAnswers = xChainFullGridAnswer
+            .map(solution => solution.updates[0].currentAnswer);
+        assert.sameDeepOrderedMembers(expectedFirstUpdatesWithCurrentAnswers, actualFirstUpdatesWithCurrentAnswers);
+
+        const expectedFirstUpdatesWithUpdatedAnswers = [
+            [5,8,9],//1
+            [5,8],//2
+            [5,8],//3
+            [6,9],//4
+            [1,3,9],//5
+            [6,9],//6
+            [3,4,9],//7
+            [5,8],//8
+            [5,8,9],//9 
+            [3,6,8],//10
+            [3,6,8],//11
+            [3,5,8]//12
+        ];
+        const actualFirstUpdatesWithUpdatedAnswers = xChainFullGridAnswer
+            .map(solution => solution.updates[0].updatedAnswer);
+        assert.sameDeepOrderedMembers(expectedFirstUpdatesWithUpdatedAnswers, actualFirstUpdatesWithUpdatedAnswers);
+
+        /*
+        // use to check results in detail within console log
+        const util = require('util');
+        xChainFullGridAnswer.forEach(x => console.log(util.inspect(x, false, null, true)));
+        console.log(`The full length is ${xChainFullGridAnswer.length}`);
+        */
     });
     it("correct rejection", function() {
-        //
+        const unanswered = "000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+        const unansweredGrid = formatGrid(toGridArray(unanswered));
+
+        const solutionList = solveXChain(unansweredGrid, 40);
+        assert.equal(solutionList, false);
+
+        const solutionList2 = solveXChainFullGrid(unansweredGrid);
+        assert.equal(solutionList2, false);
     });
 });
