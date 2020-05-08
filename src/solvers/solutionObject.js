@@ -68,6 +68,24 @@ function filterBestSingleOption(solutionList) {
   return solutionList;
 }
 
+function filterBestChain(solutionList) {
+  // find the solutions that required the least sweeps of a chain function
+  const allTotalRounds = solutionList.map(solution => solution.totalRounds);
+  const leastRounds = Math.min(...allTotalRounds);
+  const solutionsWithLeastRounds = solutionList
+    .filter(solution => solution.totalRounds === leastRounds);
+  if (solutionsWithLeastRounds.length === 1) {
+    return solutionsWithLeastRounds[0];
+  }
+  // if more than one were found with the lowest amount of sweeps, 
+  // prioritize those with higher amounts of updates
+  const allUpdateAmounts = solutionsWithLeastRounds.map(solution => solution.updates.length);
+  const mostUpdates = Math.max(...allUpdateAmounts);
+  const solutionsWithMostUpdates = solutionsWithLeastRounds
+    .filter(solution => solution.updates.length === mostUpdates);
+  return solutionsWithMostUpdates[0];
+}
+
 // pick the best solution from list of those currently possible
 export function filterBest(solutionList) {
     if (solutionList === false) {
@@ -84,6 +102,11 @@ export function filterBest(solutionList) {
       }
       if (solutionList[0].strategy.match("singleParam")) {
         return solutionList[0];
+      }
+      // from a list of possible chains, prioritize easiest to find, 
+      // followed by most helpful
+      if (solutionList[0].strategy.match("Chain")) {
+        return filterBestChain(solutionList);
       }
     
       // check for which, if any, of the solutions found solve more cells than another
@@ -107,6 +130,27 @@ export function filterBest(solutionList) {
       
       const leastLeft = proximityToSolve.indexOf( Math.min(...proximityToSolve) );
       return mostNarrowed[leastLeft];
+}
+
+// returns full solutionList, but sorted in order of filterBest results
+export const sortBest = (solutionList, sortedList=[]) => {
+  // reject sorting when no solutions found - may move outside of function later
+  if (solutionList === false) {
+    return false;
+  }
+  // if all solutions have been sorted and removed from original solutionList, 
+  // return the completed sortedList
+  if (solutionList.length === 0) {
+    return sortedList;
+  }
+  // find best current solution(s), remove from solutionList, and add to sortedList
+  // before recursively calling sortBest to advance to next best solution
+  const currentBestOption = filterBest(solutionList);
+  const updatedSolutionList = currentBestOption.length ? 
+    solutionList.filter(x => !currentBestOption.includes(x)) :
+    solutionList.filter(x => currentBestOption !== x);
+  const updatedSortedList = [...sortedList, currentBestOption];
+  return sortBest(updatedSolutionList, updatedSortedList)
 }
 
 // update answer options for related cells after solving a cell

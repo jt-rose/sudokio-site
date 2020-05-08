@@ -10,10 +10,14 @@ import {
     isOnly, 
     formatUpdate, 
     formatSolution,
-    filterBest, 
+    filterBest,
+    sortBest,
     updateRelCell, 
     applySolution
 } from "./solutionObject";
+import {
+    solveXChainFullGrid
+} from "./strategies/chains";
 
 describe("Generate Solution Object", function() {
 
@@ -173,8 +177,43 @@ describe("Generate Solution Object", function() {
         assert.deepEqual(filterBest(solutionABC), solutionC); // solve and narrow over others
         assert.deepEqual(filterBest(solutionBD), solutionB); // 2 narrow over 1 narrow
         assert.deepEqual(filterBest(solutionDE), solutionD); // both have one narrow, but one is closer to being solved
+
+        // test bestFilter on X-Chain
+        const xChainGrid = formatGrid(toGridArray("270060540050127080000400270000046752027508410500712908136274895785001024002000107"));
+        const xChainFullGridAnswer = solveXChainFullGrid(xChainGrid);
+        const bestXChain = filterBest(xChainFullGridAnswer);
+
+        assert.equal(xChainFullGridAnswer.length, 12);
+        const totalRoundsFound = [...new Set(xChainFullGridAnswer.map(x => x.totalRounds))];
+        assert.sameMembers(totalRoundsFound, [1,2,3,4]);
+
+        assert.equal([].concat(bestXChain).length, 1);
+        assert.equal(bestXChain.totalRounds, 1);
         });
         
+    });
+    describe("Sort solutionList according to best options (according to filterBest)", function() {
+        it("valid sorting", function() {
+            const sudokuGrid = formatGrid(toGridArray(gridString1));
+            const updateA = formatUpdate(40, sudokuGrid, isOnly(5));
+            const solutionA = formatSolution("multiParam", 40, updateA); // 1 solve
+            const updateC = [63, 72].map(x => formatUpdate(x, sudokuGrid, 3));
+            const solutionC = formatSolution("singleParam", 62, updateC); // solve and narrow
+
+            const solutionAC = [solutionA, solutionC];
+            const sortedAnswers = sortBest(solutionAC);
+            assert.sameDeepOrderedMembers(sortedAnswers, [solutionC, solutionA]);
+
+            const xChainGrid = formatGrid(toGridArray("270060540050127080000400270000046752027508410500712908136274895785001024002000107"));
+            const xChainFullGridAnswer = solveXChainFullGrid(xChainGrid);
+            const sortedXChainAnswers = sortBest(xChainFullGridAnswer);
+
+            const unsortedTotalRounds = [...new Set(xChainFullGridAnswer.map(x => x.totalRounds))];
+            const sortedTotalRounds = [...new Set(sortedXChainAnswers.map(x => x.totalRounds))];
+
+            assert.sameOrderedMembers(unsortedTotalRounds, [3,2,1,4]);
+            assert.sameOrderedMembers(sortedTotalRounds, [1,2,3,4]);
+        });
     });
     describe("Update related cell answers options after solving one", function() {
         it("valid updates for connected cells", function() {
