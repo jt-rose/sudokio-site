@@ -1,16 +1,15 @@
 import { assert } from "chai";
 import {
-    formatGrid,
-    toGridArray
-} from "../cellPath";
-import {
     solveXChain,
     solveXChainFullGrid
 } from "./chains";
+import {
+    xChainGrid,
+    unansweredGrid
+} from "../gridSamplesForTesting";
 
 describe("Solve Force Chains", function() {
     it("correct force chain of length 2, applied to single cell", function() {
-        const xChainGrid = formatGrid(toGridArray("270060540050127080000400270000046752027508410500712908136274895785001024002000107"));
         // cellinit 30, update: cell 22 and 76 remove 3 and 9
         const xChainAnswer = solveXChain(xChainGrid, 30);
         assert.equal(xChainAnswer.updates[0].index, 22);
@@ -22,7 +21,6 @@ describe("Solve Force Chains", function() {
         assert.sameOrderedMembers(xChainAnswer.updates[1].updatedAnswer, [5,8]);
     });
     it("correct force chain of length 2, applied to full grid", function() {
-        const xChainGrid = formatGrid(toGridArray("270060540050127080000400270000046752027508410500712908136274895785001024002000107"));
         const xChainFullGridAnswer = solveXChainFullGrid(xChainGrid);
 
         assert.equal(xChainFullGridAnswer.length, 12);
@@ -79,9 +77,6 @@ describe("Solve Force Chains", function() {
         */
     });
     it("correct rejection", function() {
-        const unanswered = "000000000000000000000000000000000000000000000000000000000000000000000000000000000";
-        const unansweredGrid = formatGrid(toGridArray(unanswered));
-
         const solutionList = solveXChain(unansweredGrid, 40);
         assert.equal(solutionList, false);
 

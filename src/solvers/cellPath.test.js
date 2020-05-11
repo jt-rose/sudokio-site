@@ -22,11 +22,12 @@ import {
     getOpenCellsWith,
     cellPath as CP
 } from "./cellPath";
+import {
+    basicPuzzleGridString,
+    basicPuzzleGrid as sudokuGrid
+} from "./gridSamplesForTesting";
 
 describe("Create cell references for related rows, columns, boxes", function() {
-
-    const gridString1 = "530070000600195000098000060800060003400803001700020006060000280000419005000080079";
-
     describe("Find related cells in same parameters", function() {
 
         const cell0Row = [0,1,2,3,4,5,6,7,8];
@@ -152,7 +153,7 @@ describe("Create cell references for related rows, columns, boxes", function() {
     });
     describe("Convert sudokuGrid from string to array and back", function() {
         it("convert to array", function() {
-            const gridArray = toGridArray(gridString1);
+            const gridArray = toGridArray(basicPuzzleGridString);
             assert.equal(typeof gridArray, "object");
             assert.equal(gridArray.length, 81);
             assert.equal(gridArray[0], 5);
@@ -161,9 +162,9 @@ describe("Create cell references for related rows, columns, boxes", function() {
             assert.sameDeepOrderedMembers(gridArray.slice(78, 81), [[],7,9]);
         });
         it("convert to string", function() {
-            const gridArray = toGridArray(gridString1);
+            const gridArray = toGridArray(basicPuzzleGridString);
             const stringRevert = toGridString(gridArray);
-            assert.equal(stringRevert, gridString1);
+            assert.equal(stringRevert, basicPuzzleGridString);
             assert.equal(typeof stringRevert, "string");
             assert.equal(stringRevert.length, 81);
             assert.equal(stringRevert[0], "5");
@@ -171,12 +172,12 @@ describe("Create cell references for related rows, columns, boxes", function() {
             assert.equal(stringRevert.slice(78, 81), "079");
         });
         it("reject if length of string/ array not equal 81", function() {
-            assert.equal(toGridArray(gridString1.concat("0")), false);
-            const gridArray = toGridArray(gridString1);
+            assert.equal(toGridArray(basicPuzzleGridString.concat("0")), false);
+            const gridArray = toGridArray(basicPuzzleGridString);
             assert.equal(toGridString(gridArray.slice(0, 80)), false);
         });
         it("convert subarrays to '0' in string format", function() {
-            const gridArrayNested = toGridArray(gridString1)
+            const gridArrayNested = toGridArray(basicPuzzleGridString)
                 .slice(0,80)
                 .concat([[1,2,3]]);
             assert.equal(gridArrayNested.length, 81);
@@ -185,7 +186,7 @@ describe("Create cell references for related rows, columns, boxes", function() {
     })
     describe("Format sudokuGrid to list possible answers for unanswered cells", function() {
         it("populate possible answers as subarray for cells marked 0", function() {
-            const fmtGrid = formatGrid(toGridArray(gridString1));
+            const fmtGrid = formatGrid(basicPuzzleGridString);
             assert.equal(fmtGrid[0], 5);
             assert.sameOrderedMembers(fmtGrid[2], [1,2,4]);
             assert.equal(fmtGrid[39], 8);
@@ -195,7 +196,6 @@ describe("Create cell references for related rows, columns, boxes", function() {
         });
     });
     describe("Filter sudokuGrid to return open, solved, and cell answers", function() {
-            const sudokuGrid = formatGrid(toGridArray(gridString1));
             const row1 = [0,1,2,3,4,5,6,7,8];
             const row2 = [72,73,74,75,76,77,78,79,80];
             const column1 = [0,9,18,27,36,45,54,63,72];
@@ -292,8 +292,6 @@ describe("Create cell references for related rows, columns, boxes", function() {
             assert.sameOrderedMembers(getExternal(getBox(80), getRow(72)), [72,73,74,75,76,77]);
         });
         it("valid filtering of open indexes", function() {
-            const sudokuGrid = formatGrid(toGridArray(gridString1));
-
             const external1 = getOpenExternal(getBox(0), getRow(0), sudokuGrid);
             assert.sameOrderedMembers(external1, [3,5,6,7,8]);
             const external2 = getOpenExternal(getBox(40), getColumn(40), sudokuGrid);
@@ -302,8 +300,6 @@ describe("Create cell references for related rows, columns, boxes", function() {
             assert.sameOrderedMembers(external3, [72,73,74,75,77]);
         });
         it("valid filtering of open indexes containing specified values", function() {
-            const sudokuGrid = formatGrid(toGridArray(gridString1));
-
             const external1 = getOpenExternalWith(getBox(0), getRow(0), sudokuGrid, [2,8]);
             assert.sameOrderedMembers(external1, [5,8]);
             const external2 = getOpenExternalWith(getBox(40), getColumn(40), sudokuGrid, [5]);
@@ -312,16 +308,12 @@ describe("Create cell references for related rows, columns, boxes", function() {
             assert.sameOrderedMembers(external3, [75,77]);
         });
         it("valid handling of error when answer given as number rather than array", function() {
-            const sudokuGrid = formatGrid(toGridArray(gridString1));
-
             const external2 = getOpenExternalWith(getBox(40), getColumn(40), sudokuGrid, 5);
             assert.sameOrderedMembers(external2, [58]);
         });
     });
     describe("Return array of open cells containing specific value(s)", function() {
         it("valid filtering of cells", function() {
-            const sudokuGrid = formatGrid(toGridArray(gridString1));
-
             const openWith1 = getOpenCellsWith(getRow(0), sudokuGrid, [2,4]);
             assert.sameOrderedMembers(openWith1, [2,5,7,8]);
             const openWith2 = getOpenCellsWith(getColumn(4), sudokuGrid, [5]);
@@ -330,8 +322,6 @@ describe("Create cell references for related rows, columns, boxes", function() {
             assert.sameOrderedMembers(openWith3, [69,78]);
         });
         it("valid handling of error when answer given as number rather than array", function() {
-            const sudokuGrid = formatGrid(toGridArray(gridString1));
-
             const openWith2 = getOpenCellsWith(getColumn(4), sudokuGrid, 5);
             assert.sameOrderedMembers(openWith2, [40,58]);
         });

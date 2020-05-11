@@ -1,8 +1,6 @@
 import { assert } from "chai";
 import {
-    getRow,
-    formatGrid,
-    toGridArray
+    getRow
 } from "../cellPath";
 import { filterBest } from "../solutionObject";
 import {
@@ -10,16 +8,24 @@ import {
     solveNakedTriple,
     solveNakedQuad
 } from "./nakedPairings";
+import {
+    incorrectGrid2,
+    singleNakedPairGrid,
+    multiNakedPairGrid,
+    singleNakedTripleGrid,
+    multiNakedTripleGrid,
+    singleNakedQuadGrid,
+    multiNakedQuadGrid,
+    singleNakedTripleCascadeGrid,
+    multiNakedTripleCascadeGrid,
+    singleNakedQuadCascadeGrid,
+    multiNakedQuadCascadeGrid
+} from "../gridSamplesForTesting";
 
-describe("Solve Naked Pairings", function() {
-
-    const invalid = "990000000002000000003000000004000000005000000006000000007000000008000000001000000";
-    const invalidGrid = toGridArray(invalid);
-    
+describe("Solve Naked Pairings", function() {    
     describe("Solve Naked Pairs", function() {
         it("correct solution for single pair", function() {
-            const singlePairGrid = formatGrid(toGridArray("000000000000000000000450000000540000000000000000000000123000089000000000000000000"));
-            const solution = solveNakedPair(singlePairGrid, getRow(54))[0];
+            const solution = solveNakedPair(singleNakedPairGrid, getRow(54))[0];
 
             assert.equal(solution.strategy, "nakedPair");
             assert.sameOrderedMembers(solution.cellInit, [57,58]);
@@ -37,8 +43,7 @@ describe("Solve Naked Pairings", function() {
             
         });
         it("correct solution for multiple pairs", function() {
-            const multiPairGrid = formatGrid(toGridArray("000001600000009000000450900000540100000000000000000000023000080000000700000067000"));
-            const solutionList = solveNakedPair(multiPairGrid, getRow(54));
+            const solutionList = solveNakedPair(multiNakedPairGrid, getRow(54));
             const SL1 = solutionList[0];
             const SL2 = solutionList[1];
 
@@ -84,14 +89,13 @@ describe("Solve Naked Pairings", function() {
             assert.sameOrderedMembers(bestSolution.updates[1].updatedAnswer, [4,5,6]);
         });
         it("correct rejection when none found", function() {
-            const reject = solveNakedPair(invalidGrid, getRow(0));
+            const reject = solveNakedPair(incorrectGrid2, getRow(0));
             assert.equal(reject, false);
         });
     });
     describe("Solve Naked Triples", function() {
         it("correct solution for single Triple", function() {
-            const singleTripleGrid = formatGrid(toGridArray("000000000456000789123000456000000000000000000000000000000000000000000000000000123"));
-            const solution = solveNakedTriple(singleTripleGrid, getRow(0))[0];
+            const solution = solveNakedTriple(singleNakedTripleGrid, getRow(0))[0];
 
             assert.equal(solution.strategy, "nakedTriple");
             assert.sameOrderedMembers(solution.cellInit, [0,1,2]);
@@ -113,8 +117,7 @@ describe("Solve Naked Pairings", function() {
             assert.sameOrderedMembers(solution.updates[2].updatedAnswer, [1,2,3,4,5,6]);
         });
         it("correct solution for multiple Triples", function() {
-            const multiTripleGrid = formatGrid(toGridArray("000000000456000789123000456000000000000000000000000000000000000000000000000009000"));
-            const solutionList = solveNakedTriple(multiTripleGrid, getRow(0));
+            const solutionList = solveNakedTriple(multiNakedTripleGrid, getRow(0));
             assert.equal(solutionList.length, 2);
             const SL1 = solutionList[0];
             const SL2 = solutionList[1];
@@ -162,14 +165,13 @@ describe("Solve Naked Pairings", function() {
             assert.deepEqual(filterBest(solutionList), solutionList[1]);
         });
         it("correct rejection when none found", function() {
-            const reject = solveNakedTriple(invalidGrid, getRow(0));
+            const reject = solveNakedTriple(incorrectGrid2, getRow(0));
             assert.equal(reject, false);
         });
     });
     describe("Solve Naked Quads", function() {
         it("correct solution for single Quad", function() {
-            const quadSingleGrid = formatGrid(toGridArray("103056000000000000000700000000000000000000000000000700000000000000000070070000000"));
-            const solution = solveNakedQuad(quadSingleGrid, getRow(0))[0];
+            const solution = solveNakedQuad(singleNakedQuadGrid, getRow(0))[0];
 
             assert.equal(solution.strategy, "nakedQuad");
             assert.sameOrderedMembers(solution.cellInit, [1,3,6,7]);
@@ -180,8 +182,7 @@ describe("Solve Naked Pairings", function() {
             assert.sameOrderedMembers(solution.updates[0].updatedAnswer, [7]);
         });
         it("correct solution for multiple Quads", function() {
-            const quadMultiGrid = formatGrid(toGridArray("000209000000608000000090600000105000000306000000407060000000000406000705123000689"));
-            const solutionList = solveNakedQuad(quadMultiGrid, getRow(54));
+            const solutionList = solveNakedQuad(multiNakedQuadGrid, getRow(54));
             const SL1 = solutionList[0];
             const SL2 = solutionList[1];
 
@@ -214,14 +215,13 @@ describe("Solve Naked Pairings", function() {
 
         });
         it("correct rejection when none found", function() {
-            const reject = solveNakedQuad(invalidGrid, getRow(0));
+            const reject = solveNakedQuad(incorrectGrid2, getRow(0));
             assert.equal(reject, false);
         });
     });
     describe("Solve Naked Cascading Triples", function() {
         it("correct single solution", function() {
-            const singleAnswerGrid = formatGrid(toGridArray("000000000759000000684000000312000000000000000000000000000000000000000000000000009"));
-            const solution = solveNakedTriple(singleAnswerGrid, getRow(0));
+            const solution = solveNakedTriple(singleNakedTripleCascadeGrid, getRow(0));
             const SL1 = solution[0];
             assert.equal(solution.length, 1);
             
@@ -243,8 +243,7 @@ describe("Solve Naked Pairings", function() {
             assert.sameOrderedMembers(SL1.updates[5].updatedAnswer, [4,5,6,7,8]);
         });
         it("correct multiple solutions", function() {
-            const multiAnswerGrid = formatGrid(toGridArray("000000000759000461684000532312000000000000000000000000000009008000000070000000900"));
-            const solutionList = solveNakedTriple(multiAnswerGrid, getRow(0));
+            const solutionList = solveNakedTriple(multiNakedTripleCascadeGrid, getRow(0));
             const SL1 = solutionList[0];
             const SL2 = solutionList[1];
             assert.equal(solutionList.length, 2);
@@ -286,14 +285,13 @@ describe("Solve Naked Pairings", function() {
             assert.sameOrderedMembers(SL2.updates[2].updatedAnswer, [1,2,3,4,5,6]);
         });
         it("correct rejection", function() {
-            const reject = solveNakedTriple(invalidGrid, getRow(0));
+            const reject = solveNakedTriple(incorrectGrid2, getRow(0));
             assert.equal(reject, false);
         });
     });
     describe("Solve Naked Cascading Quads", function() {
         it("correct single solution", function() {
-            const singleAnswerGrid = formatGrid(toGridArray("000000000759000000684000000312500000000100000000900000000709000000800000000600000"));
-            const solution = solveNakedQuad(singleAnswerGrid, getRow(0));
+            const solution = solveNakedQuad(singleNakedQuadCascadeGrid, getRow(0));
             const SL1 = solution[0];
             assert.equal(solution.length, 1);
             
@@ -315,8 +313,7 @@ describe("Solve Naked Pairings", function() {
             assert.sameOrderedMembers(SL1.updates[1].updatedAnswer, [5,6,7,8]);
         });
         it("correct multiple solutions", function() {
-            const multiAnswerGrid = formatGrid(toGridArray("000000000759000412684000953312506080000103000000902000000701000000804000000605000"));
-            const solutionList = solveNakedQuad(multiAnswerGrid, getRow(0));
+            const solutionList = solveNakedQuad(multiNakedQuadCascadeGrid, getRow(0));
             const SL1 = solutionList[0];
             const SL2 = solutionList[1];
             assert.equal(solutionList.length, 2);
@@ -348,7 +345,7 @@ describe("Solve Naked Pairings", function() {
             assert.sameOrderedMembers(SL2.updates[0].updatedAnswer, [1,2,3,4,5]);
         });
         it("correct rejection", function() {
-            const reject = solveNakedQuad(invalidGrid, getRow(0));
+            const reject = solveNakedQuad(incorrectGrid2, getRow(0));
             assert.equal(reject, false);
         });
     })

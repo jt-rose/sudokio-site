@@ -1,7 +1,6 @@
 import { assert } from 'chai';
 import {
     getRelCell,
-    toGridArray,
     formatGrid,
     getSolved,
     getUniqueOpenValues
@@ -18,11 +17,12 @@ import {
 import {
     solveXChainFullGrid
 } from "./strategies/chains";
+import {
+    basicPuzzleGrid as sudokuGrid,
+    xChainGrid
+} from "./gridSamplesForTesting";
 
 describe("Generate Solution Object", function() {
-
-    const gridString1 = "530070000600195000098000060800060003400803001700020006060000280000419005000080079";
-
     describe("Return possible answers to remove when answer can 'only' be from a certain set", function() {
         it("valid answers to remove", function() {
             assert.sameOrderedMembers(isOnly([1,2,3,4]), [5,6,7,8,9]);
@@ -32,8 +32,6 @@ describe("Generate Solution Object", function() {
     });
     describe("Format what updates will occur after applying solution", function() {
         it("valid updates after removing answers", function() {
-            const sudokuGrid = formatGrid(toGridArray(gridString1));
-
             const update1 = formatUpdate(2, sudokuGrid, [1,2])
             assert.equal(update1.index, 2);
             assert.sameOrderedMembers(update1.removal, [1,2]);
@@ -53,8 +51,6 @@ describe("Generate Solution Object", function() {
             assert.sameOrderedMembers(update3.updatedAnswer, [6]);
         });
         it("valid updates after removing answers with isOnly", function() {
-            const sudokuGrid = formatGrid(toGridArray(gridString1));
- 
             const update4 = formatUpdate(2, sudokuGrid, isOnly([2,4]) );
             assert.equal(update4.index, 2);
             assert.sameOrderedMembers(update4.removal, [1,3,5,6,7,8,9]);
@@ -74,7 +70,6 @@ describe("Generate Solution Object", function() {
             assert.sameOrderedMembers(update6.updatedAnswer, [6]);
         });
         it("valid creation of updates with additional notes", function() {
-            const sudokuGrid = formatGrid(toGridArray(gridString1));
             const testNotes = "test";
  
             const update4 = formatUpdate(2, sudokuGrid, isOnly([2,4]) );
@@ -88,7 +83,6 @@ describe("Generate Solution Object", function() {
     });
     describe("Format Solution Object", function() {
         it("valid data formatting - solve without narrow", function() {
-            const sudokuGrid = formatGrid(toGridArray(gridString1));
             const updateA = formatUpdate(40, sudokuGrid, isOnly(5));
             const solutionA = formatSolution("multiParam", 40, updateA);
             
@@ -101,12 +95,11 @@ describe("Generate Solution Object", function() {
             assert.sameOrderedMembers(solutionA.solved[0].updatedAnswer, [5]);
             assert.equal(solutionA.solved.length, 1);
         });
-            it("valid data formatting - narrow without solve", function() {
-                const sudokuGrid = formatGrid(toGridArray(gridString1));
-                const updateB = [54, 72].map(x => formatUpdate(x, sudokuGrid, [2,9]));
-                const solutionB = formatSolution("testing123", [54,55,56,63,64,65,72,73,74], updateB);
+        it("valid data formatting - narrow without solve", function() {
+            const updateB = [54, 72].map(x => formatUpdate(x, sudokuGrid, [2,9]));
+            const solutionB = formatSolution("testing123", [54,55,56,63,64,65,72,73,74], updateB);
                 
-                assert.equal(solutionB.strategy, "testing123");
+            assert.equal(solutionB.strategy, "testing123");
             assert.sameOrderedMembers(solutionB.cellInit, [54,55,56,63,64,65,72,73,74]);
             assert.sameOrderedMembers(solutionB.removal, [2,9]);
             assert.equal(solutionB.updates[1].index, 72);
@@ -118,7 +111,6 @@ describe("Generate Solution Object", function() {
             assert.equal(solutionB.solved.length, 0);
           });
           it("valid data formatting - solve and narrow", function() {
-            const sudokuGrid = formatGrid(toGridArray(gridString1));
             const updateC = [63, 72].map(x => formatUpdate(x, sudokuGrid, 3));
             const solutionC = formatSolution("singleParam", 62, updateC);
         
@@ -133,7 +125,6 @@ describe("Generate Solution Object", function() {
         assert.equal(solutionC.solved.length, 1);
         });
         it("valid creation of solution object with additional notes", function() {
-            const sudokuGrid = formatGrid(toGridArray(gridString1));
             const updateC = [63, 72].map(x => formatUpdate(x, sudokuGrid, 3));
             const solutionC = formatSolution("singleParam", 62, updateC);
             const testNotes = "test";
@@ -148,8 +139,6 @@ describe("Generate Solution Object", function() {
     });
     describe("Filter the best solution from a list", function() {
         it("choose best solution", function() {
-            const sudokuGrid = formatGrid(toGridArray(gridString1));
-
         const updateA = formatUpdate(40, sudokuGrid, isOnly(5));
         const solutionA = formatSolution("multiParam", 40, updateA); // 1 solve
 
@@ -179,7 +168,6 @@ describe("Generate Solution Object", function() {
         assert.deepEqual(filterBest(solutionDE), solutionD); // both have one narrow, but one is closer to being solved
 
         // test bestFilter on X-Chain
-        const xChainGrid = formatGrid(toGridArray("270060540050127080000400270000046752027508410500712908136274895785001024002000107"));
         const xChainFullGridAnswer = solveXChainFullGrid(xChainGrid);
         const bestXChain = filterBest(xChainFullGridAnswer);
 
@@ -194,7 +182,6 @@ describe("Generate Solution Object", function() {
     });
     describe("Sort solutionList according to best options (according to filterBest)", function() {
         it("valid sorting", function() {
-            const sudokuGrid = formatGrid(toGridArray(gridString1));
             const updateA = formatUpdate(40, sudokuGrid, isOnly(5));
             const solutionA = formatSolution("multiParam", 40, updateA); // 1 solve
             const updateC = [63, 72].map(x => formatUpdate(x, sudokuGrid, 3));
@@ -204,7 +191,7 @@ describe("Generate Solution Object", function() {
             const sortedAnswers = sortBest(solutionAC);
             assert.sameDeepOrderedMembers(sortedAnswers, [solutionC, solutionA]);
 
-            const xChainGrid = formatGrid(toGridArray("270060540050127080000400270000046752027508410500712908136274895785001024002000107"));
+            const xChainGrid = formatGrid("270060540050127080000400270000046752027508410500712908136274895785001024002000107");
             const xChainFullGridAnswer = solveXChainFullGrid(xChainGrid);
             const sortedXChainAnswers = sortBest(xChainFullGridAnswer);
 
@@ -218,7 +205,7 @@ describe("Generate Solution Object", function() {
     describe("Update related cell answers options after solving one", function() {
         it("valid updates for connected cells", function() {
             const answeredCellIndex = 2;
-            const answeredGrid = formatGrid(toGridArray(gridString1))
+            const answeredGrid = sudokuGrid
                 .map((item, index) => index === answeredCellIndex ? 4 : item);
             const updatedGrid = updateRelCell(answeredCellIndex, answeredGrid);
             assert.equal(updatedGrid[2], 4);
@@ -230,8 +217,6 @@ describe("Generate Solution Object", function() {
         });
     });
     describe("Apply the solution to a sudokuGrid and return updated grid", function() {
-        const sudokuGrid = formatGrid(toGridArray(gridString1));
-
         const updateA = formatUpdate(40, sudokuGrid, isOnly(5));
         const solutionA = formatSolution("multiParam", 40, updateA);
         const gridA = applySolution(sudokuGrid, solutionA);
@@ -258,7 +243,7 @@ describe("Generate Solution Object", function() {
       assert.isArray(sudokuGrid[54]);
       assert.sameOrderedMembers(sudokuGrid[72], [1,2,3]);
       assert.isArray(sudokuGrid[72]);
-        // check for successful update
+      // check for successful update
       assert.sameOrderedMembers(gridB[54], [1,3]);
       assert.isArray(gridB[54]);
       assert.sameOrderedMembers(gridB[72], [1,3]);
@@ -306,8 +291,6 @@ describe("Generate Solution Object", function() {
         });
     });
     describe("Apply multiple solutions to a sudokuGrid", function() {
-        const sudokuGrid = formatGrid(toGridArray(gridString1));
-
         const updateA = formatUpdate(40, sudokuGrid, isOnly(5));
         const solutionA = formatSolution("multiParam", 40, updateA);
 

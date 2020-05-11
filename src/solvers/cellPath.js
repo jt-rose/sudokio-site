@@ -140,7 +140,7 @@ export function toGridString(gridArray) {
 
 // format starting grid to list possible answers for unanswered cells
 // only used in beginning, updateRelCell and processSolution used during analysis
-export function formatGrid(startingGrid) {
+export function formatGridArray(startingGrid) {
     return startingGrid.map((item, index) => {
         if (typeof item === "number") {
             return item;
@@ -149,6 +149,8 @@ export function formatGrid(startingGrid) {
         return [1,2,3,4,5,6,7,8,9].filter(answer => !solvedValues.includes(answer));
     });
 }
+
+export const formatGrid = gridString => formatGridArray(toGridArray(gridString));
 
 // cross-reference one param with another while removing any cells that overlap
 export function getExternal(baseParam, extParam) {

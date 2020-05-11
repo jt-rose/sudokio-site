@@ -1,24 +1,26 @@
 import { assert } from "chai";
 import {
-    getRow,
-    formatGrid,
-    toGridArray
+    getRow
 } from "../cellPath";
 import {
     solveXWing,
     solveSwordfish,
     solveJellyfish
 } from "./fish";
+import {
+    XWingGrid1,
+    XWingGrid2,
+    swordfishGrid1,
+    swordfishGrid2,
+    jellyfishGrid1,
+    jellyfishGrid2,
+    invalidGrid
+} from "../gridSamplesForTesting";
 
 describe("Solve Fish Strategies", function() {
-
-    const invalid = "990000000002000000003000000004000000005000000006000000007000000008000000001000000";
-    const invalidGrid = toGridArray(invalid);
-
     describe("Solve X-Wing", function() {
         it("correct solution", function() {
-            const XWingGrid = formatGrid(toGridArray("900051730107398205500076091810724350200165007075983012021537000758649123390812570"));
-            const solution = solveXWing(XWingGrid);
+            const solution = solveXWing(XWingGrid1);
             const SL1 = solution[0];
             const SL2 = solution[1];
 
@@ -64,7 +66,7 @@ describe("Solve Fish Strategies", function() {
             assert.sameOrderedMembers(SL2.updates[1].currentAnswer, [4,6,8,9]);
             assert.sameOrderedMembers(SL2.updates[1].updatedAnswer, [4,8,9]);
 
-            const XWingGrid2 = formatGrid(toGridArray("100000569492056108056109240009640801064010000218035604040500016905061402621000005"));
+            
             const solution2 = solveXWing(XWingGrid2);
             const SL3 = solution2[0];
 
@@ -99,8 +101,7 @@ describe("Solve Fish Strategies", function() {
     });
     describe("Solve Swordfish", function() {
         it("correct solution", function() {
-            const swordfishGrid = formatGrid(toGridArray("529410703006003002003200000052300076637050200190627530300069420200830600960742305"));
-            const solution = solveSwordfish(swordfishGrid);
+            const solution = solveSwordfish(swordfishGrid1);
             const SL1 = solution[0];
 
             assert.equal(solution.length, 1);
@@ -128,7 +129,6 @@ describe("Solve Fish Strategies", function() {
             assert.sameOrderedMembers(SL1.updates[4].updatedAnswer, [1,4,5,6,9]);
 
 
-            const swordfishGrid2 = formatGrid(toGridArray("926000100537010428841000603259734816714060030368120040102000084485071360603000001"));
             const solution2 = solveSwordfish(swordfishGrid2);
             const SL2 = solution2[0];
 
@@ -163,8 +163,7 @@ describe("Solve Fish Strategies", function() {
     });
     describe("Solve JellyFish", function() {
         it("correct solution", function() {
-            const jellyfishGrid = formatGrid(toGridArray("050749080089003000600001390040007060000400809000002000060004010500210047010005030"));
-            const solution = solveJellyfish(jellyfishGrid);
+            const solution = solveJellyfish(jellyfishGrid1);
             const SL1 = solution[0];
 
             assert.equal(solution.length, 1);
@@ -192,7 +191,6 @@ describe("Solve Fish Strategies", function() {
             assert.sameOrderedMembers(SL1.updates[6].updatedAnswer, [4,5]);
 
 
-            const jellyfishGrid2 = formatGrid(toGridArray("000000000070030920019025630004000210000000000057090460095140370700000040042367590"));
             const solution2 = solveJellyfish(jellyfishGrid2);
             const SL2 = solution2[0];
             const SL3 = solution2[1];

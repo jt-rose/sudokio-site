@@ -3,9 +3,7 @@ import {
     getRow,
     getColumn,
     getBox,
-    getOpen,
-    formatGrid,
-    toGridArray
+    getOpen
 } from "../cellPath";
 import { applySolution } from "../solutionObject";
 import {
@@ -13,15 +11,18 @@ import {
     solveHiddenTriple,
     solveHiddenQuad
 } from "./hiddenPairings";
+import {
+    incorrectGrid2,
+    hiddenPairGrid,
+    hiddenTripleGrid,
+    hiddenQuadGrid,
+    singleNakedPairGrid
+} from "../gridSamplesForTesting";
 describe("Solve Hidden Pairings", function() {
-
-    const invalid = "990000000002000000003000000004000000005000000006000000007000000008000000001000000";
-    const invalidGrid = toGridArray(invalid);
 
     describe("Solve Hidden Pairs", function() {
         it("correct single solution", function() {
-            const singlePairGrid = formatGrid(toGridArray("164000000250000000370000000000007000000000047000000056000000000806000000945000000"));
-            const solution = solveHiddenPair(singlePairGrid, getColumn(0));
+            const solution = solveHiddenPair(hiddenPairGrid, getColumn(0));
             const SL1 = solution[0];
     
             assert.equal(solution.length, 1);
@@ -40,21 +41,18 @@ describe("Solve Hidden Pairings", function() {
     
         });
         it("correct rejection", function() {
-            const reject = solveHiddenPair(invalidGrid, getRow(0));
+            const reject = solveHiddenPair(incorrectGrid2, getRow(0));
             assert.equal(reject, false);
     
-            const hiddenTripleGrid = formatGrid(toGridArray("907020030002900800061050729105000670009700000746315982694580017513000068278000095"));
             const rejectTriple = solveHiddenPair(hiddenTripleGrid, getRow(9));
             assert.equal(rejectTriple, false);
     
-            const hiddenQuadGrid = formatGrid(toGridArray("048397000060085090090026000702863049984512070036974000409738060820609037673201980"));
             const rejectQuad = solveHiddenPair(hiddenQuadGrid, getBox(15));
             assert.equal(rejectQuad, false);
         });
     });
     describe("Solve Hidden /Cascading Triples", function() {
         it("correct single solution", function() {
-            const hiddenTripleGrid = formatGrid(toGridArray("907020030002900800061050729105000670009700000746315982694580017513000068278000095"));
             const solution = solveHiddenTriple(hiddenTripleGrid, getRow(9));
             const SL1 = solution[0];
     
@@ -87,17 +85,15 @@ describe("Solve Hidden Pairings", function() {
             assert.equal(count3s.length, 1);
         });
         it("correct rejection", function() {
-            const reject = solveHiddenTriple(invalidGrid, getRow(0));
+            const reject = solveHiddenTriple(incorrectGrid2, getRow(0));
             assert.equal(reject, false);
     
-            const hiddenQuadGrid = formatGrid(toGridArray("048397000060085090090026000702863049984512070036974000409738060820609037673201980"));
             const rejectQuad = solveHiddenTriple(hiddenQuadGrid, getBox(15));
             assert.equal(rejectQuad, false);
         });
     });
     describe("Solve Hidden /Cascading Quads", function() {
         it("correct single solution", function() {
-            const hiddenQuadGrid = formatGrid(toGridArray("048397000060085090090026000702863049984512070036974000409738060820609037673201980"));
             const solution = solveHiddenQuad(hiddenQuadGrid, getBox(15));
             const SL1 = solution[0];
     
@@ -135,14 +131,12 @@ describe("Solve Hidden Pairings", function() {
             assert.equal(count2s.length, 1);
         });
         it("correct rejection", function() {
-            const reject = solveHiddenQuad(invalidGrid, getRow(0));
+            const reject = solveHiddenQuad(incorrectGrid2, getRow(0));
             assert.equal(reject, false);
     
-            const singlePairGrid = formatGrid(toGridArray("164000000250000000370000000000007000000000047000000056000000000806000000945000000"));
-            const rejectPair = solveHiddenQuad(singlePairGrid, getColumn(0));
+            const rejectPair = solveHiddenQuad(singleNakedPairGrid, getColumn(0));
             assert.equal(rejectPair, false);
     
-            const hiddenTripleGrid = formatGrid(toGridArray("907020030002900800061050729105000670009700000746315982694580017513000068278000095"));
             const rejectTriple = solveHiddenQuad(hiddenTripleGrid, getRow(9));
             assert.equal(rejectTriple, false);
         });
