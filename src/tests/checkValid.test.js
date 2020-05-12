@@ -9,7 +9,7 @@ import {
     isComplete,
     isCorrectSoFar,
     isCompleteAndCorrect
-} from "./checkValid";
+} from "../solvers/checkValid";
 import {
     wrongDataType,
     gridStringTooShort,

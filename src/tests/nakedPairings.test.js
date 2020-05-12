@@ -1,13 +1,13 @@
 import { assert } from "chai";
 import {
     getRow
-} from "../cellPath";
-import { filterBest } from "../solutionObject";
+} from "../solvers/cellPath";
+import { filterBest } from "../solvers/solutionObject";
 import {
     solveNakedPair,
     solveNakedTriple,
     solveNakedQuad
-} from "./nakedPairings";
+} from "../solvers/strategies/nakedPairings";
 import {
     incorrectGrid2,
     singleNakedPairGrid,
@@ -20,7 +20,7 @@ import {
     multiNakedTripleCascadeGrid,
     singleNakedQuadCascadeGrid,
     multiNakedQuadCascadeGrid
-} from "../gridSamplesForTesting";
+} from "./gridSamplesForTesting";
 
 describe("Solve Naked Pairings", function() {    
     describe("Solve Naked Pairs", function() {

@@ -1,4 +1,4 @@
-import { formatGrid } from "./cellPath";
+import { formatGrid } from "../solvers/cellPath";
 
 // This file stores various sudoku grids for testing different strategies and functions
 

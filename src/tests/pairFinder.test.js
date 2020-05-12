@@ -3,7 +3,7 @@ import {
     pairs,
     triples,
     quads
-} from "./pairFinder";
+} from "../solvers/strategies/pairFinder";
 
 const testArray = [1,2,3,4,5];
 

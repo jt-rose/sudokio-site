@@ -9,10 +9,8 @@ import {
 } from "../solutionObject";
 
 import {
-    strategyList,
     solveEach,
     applyStrats,
-    applyStratsUntilDone,
     limitStratsTo
 } from "../applyStrats";
 

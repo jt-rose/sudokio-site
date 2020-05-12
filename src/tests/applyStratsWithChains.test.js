@@ -1,6 +1,6 @@
-import solveWithStandardOptions from "./applyStratsWithChains";
+import solveWithStandardOptions from "../solvers/applyStratsWithChains";
 import { assert } from "chai";
-import { applyStratsUntilDone } from "./applyStrats";
+import { applyStratsUntilDone } from "../solvers/applyStrats";
 import { xChainGrid } from "./gridSamplesForTesting";
 
 describe("Solve puzzle using standard options, including X-chain", function() {

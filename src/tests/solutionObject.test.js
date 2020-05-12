@@ -4,7 +4,7 @@ import {
     formatGrid,
     getSolved,
     getUniqueOpenValues
-} from "./cellPath";
+} from "../solvers/cellPath";
 import {
     isOnly, 
     formatUpdate, 
@@ -13,10 +13,10 @@ import {
     sortBest,
     updateRelCell, 
     applySolution
-} from "./solutionObject";
+} from "../solvers/solutionObject";
 import {
     solveXChainFullGrid
-} from "./strategies/chains";
+} from "../solvers/strategies/chains";
 import {
     basicPuzzleGrid as sudokuGrid,
     xChainGrid

@@ -3,14 +3,14 @@ import {
     getRow,
     getColumn,
     getBox
-} from "../cellPath";
-import solveSingleParam from "./singleParam";
+} from "../solvers/cellPath";
+import solveSingleParam from "../solvers/strategies/singleParam";
 import {
     singleParamRowGrid,
     singleParamColumnGrid,
     singleParamBoxGrid,
     basicPuzzleGrid
-} from "../gridSamplesForTesting";
+} from "./gridSamplesForTesting";
 
 describe("2. Solve Single Param", function() {
     it("valid solution for answer option only in single cell of row", function() {

@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import checkAndSolve from "./checkAndSolve";
+import checkAndSolve from "../solvers/checkAndSolve";
 import {
     gridStringTooShort,
     gridStringNotEnoughAnswers,

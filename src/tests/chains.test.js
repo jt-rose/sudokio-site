@@ -2,11 +2,11 @@ import { assert } from "chai";
 import {
     solveXChain,
     solveXChainFullGrid
-} from "./chains";
+} from "../solvers/strategies/chains";
 import {
     xChainGrid,
     unansweredGrid
-} from "../gridSamplesForTesting";
+} from "./gridSamplesForTesting";
 
 describe("Solve Force Chains", function() {
     it("correct force chain of length 2, applied to single cell", function() {

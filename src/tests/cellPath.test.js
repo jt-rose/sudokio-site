@@ -21,7 +21,7 @@ import {
     getOpenExternalWith, 
     getOpenCellsWith,
     cellPath as CP
-} from "./cellPath";
+} from "../solvers/cellPath";
 import {
     basicPuzzleGridString,
     basicPuzzleGrid as sudokuGrid

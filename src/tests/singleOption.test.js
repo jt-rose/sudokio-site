@@ -1,9 +1,9 @@
 import { assert } from "chai";
 import * as R from "ramda";
-import solveSingleOption from "./singleOption";
+import solveSingleOption from "../solvers/strategies/singleOption";
 import {
     singleOptionGrid
-} from "../gridSamplesForTesting";
+} from "./gridSamplesForTesting";
 
 describe("1. Solve Single Option", function() {
     it("valid solution for single parameter - row", function() {

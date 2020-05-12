@@ -4,20 +4,20 @@ import {
     getColumn,
     getBox,
     getOpen
-} from "../cellPath";
-import { applySolution } from "../solutionObject";
+} from "../solvers/cellPath";
+import { applySolution } from "../solvers/solutionObject";
 import {
     solveHiddenPair,
     solveHiddenTriple,
     solveHiddenQuad
-} from "./hiddenPairings";
+} from "../solvers/strategies/hiddenPairings";
 import {
     incorrectGrid2,
     hiddenPairGrid,
     hiddenTripleGrid,
     hiddenQuadGrid,
     singleNakedPairGrid
-} from "../gridSamplesForTesting";
+} from "./gridSamplesForTesting";
 describe("Solve Hidden Pairings", function() {
 
     describe("Solve Hidden Pairs", function() {

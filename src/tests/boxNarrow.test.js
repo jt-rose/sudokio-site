@@ -1,13 +1,13 @@
 import { assert } from "chai";
 import {
     getBox
-} from "../cellPath";
-import solveBoxNarrow from "./boxNarrow";
+} from "../solvers/cellPath";
+import solveBoxNarrow from "../solvers/strategies/boxNarrow";
 import {
     boxNarrowGrid1,
     boxNarrowGrid2,
     unansweredGrid
-} from "../gridSamplesForTesting";
+} from "./gridSamplesForTesting";
 
 const solutionList1 = solveBoxNarrow(boxNarrowGrid1, getBox(40));
 const solutionList2 = solveBoxNarrow(boxNarrowGrid2, getBox(0));

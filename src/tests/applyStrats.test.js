@@ -3,7 +3,7 @@ import {
     applyStrats,
     limitStratsTo,
     applyStratsUntilDone
-} from "./applyStrats";
+} from "../solvers/applyStrats";
 import {
     basicPuzzleGrid,
     basicPuzzleAnswer,

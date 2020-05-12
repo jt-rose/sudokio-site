@@ -1,12 +1,12 @@
 import { assert } from "chai";
 import {
     getRow
-} from "../cellPath";
+} from "../solvers/cellPath";
 import {
     solveXWing,
     solveSwordfish,
     solveJellyfish
-} from "./fish";
+} from "../solvers/strategies/fish";
 import {
     XWingGrid1,
     XWingGrid2,
@@ -15,7 +15,7 @@ import {
     jellyfishGrid1,
     jellyfishGrid2,
     invalidGrid
-} from "../gridSamplesForTesting";
+} from "./gridSamplesForTesting";
 
 describe("Solve Fish Strategies", function() {
     describe("Solve X-Wing", function() {
