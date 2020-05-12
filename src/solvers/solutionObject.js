@@ -70,10 +70,10 @@ function filterBestSingleOption(solutionList) {
 
 function filterBestChain(solutionList) {
   // find the solutions that required the least sweeps of a chain function
-  const allTotalRounds = solutionList.map(solution => solution.totalRounds);
+  const allTotalRounds = solutionList.map(solution => solution.totalChainRounds);
   const leastRounds = Math.min(...allTotalRounds);
   const solutionsWithLeastRounds = solutionList
-    .filter(solution => solution.totalRounds === leastRounds);
+    .filter(solution => solution.totalChainRounds === leastRounds);
   if (solutionsWithLeastRounds.length === 1) {
     return solutionsWithLeastRounds[0];
   }

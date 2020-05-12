@@ -53,7 +53,7 @@ const getTotalSolutionsWithRounds = (currentSolutionsFound, allSolutionsFound, c
     // add current round of chain-sweep to solutionsFound
   const currentSolutionsWithRound = currentSolutionsFound.map(solutionSet => 
     solutionSet === false ? false : 
-    solutionSet.map(singleSolution => ({...singleSolution, currentRound}) ));
+    solutionSet.map(singleSolution => ({...singleSolution, chainRound: currentRound}) ));
 
   // keep updated data on solutions found for each divergent map 
   // during each sweep of the chain updates (to use for data visualization)
@@ -98,7 +98,7 @@ const findChainOverlapUpdates = (sudokuGrid, startingPaths, stratsUsed, roundUpd
     return {
         updatesFound,
         totalSolutionsWithRounds,
-        totalRounds: round
+        totalChainRounds: round
     };
   }
   
@@ -119,7 +119,7 @@ const chainTemplate = (stratsUsed, answerLen, description) => (sudokuGrid, cellI
     .map(update => formatSolution("NA-chainAttempt", cellIndex, update)) // map solutions
     .map(sol => applySolution(sudokuGrid, sol)); // map starting grids
   // find first possible updates based on overlapping chains
-  const {updatesFound, totalSolutionsWithRounds, totalRounds } = findChainOverlapUpdates(sudokuGrid, startingPaths, stratsUsed);
+  const {updatesFound, totalSolutionsWithRounds, totalChainRounds } = findChainOverlapUpdates(sudokuGrid, startingPaths, stratsUsed);
   if (!updatesFound) {
     return false;
   }
@@ -127,7 +127,7 @@ const chainTemplate = (stratsUsed, answerLen, description) => (sudokuGrid, cellI
   const additionalSolutionInfo = {
       startingPaths,
       totalSolutionsWithRounds,
-      totalRounds
+      totalChainRounds
   };
   return formatSolution(description, cellIndex, updatesFound, additionalSolutionInfo);
 }

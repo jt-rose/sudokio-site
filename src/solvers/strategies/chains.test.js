@@ -30,7 +30,7 @@ describe("Solve Force Chains", function() {
         assert.sameOrderedMembers(expectedCellsWithXChain, cellsWithXChainFound);
 
         const expectedRoundsTaken = [3, 2, 1, 3, 3, 4, 3, 1, 2, 1, 1, 3];
-        const actualRoundsTaken = xChainFullGridAnswer.map(solution => solution.totalRounds);
+        const actualRoundsTaken = xChainFullGridAnswer.map(solution => solution.totalChainRounds);
         assert.sameOrderedMembers(expectedRoundsTaken, actualRoundsTaken);
 
         const expectedFirstUpdatesWithCurrentAnswers = [

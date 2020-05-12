@@ -66,7 +66,7 @@ describe("Create cell references for related rows, columns, boxes", function() {
             assert.sameOrderedMembers(getRelCell(80), cell80All);
         });
     });
-    describe("Find row, column, and box number - CS numbering", function() {
+    describe("Find row, column, and box number - numbering from 0", function() {
         it("correct row number", function() {
             assert.equal(getRowNumber(4), 0);
             assert.equal(getRowNumber(40), 4);

@@ -1,13 +1,11 @@
 import {
-    cellPath as CP,
-    getSolved
+    cellPath as CP
 } from "./cellPath";
-
 import {
     filterBest,
     applySolution
 } from "./solutionObject";
-
+import { isComplete } from "./checkValid";
 import solveSingleOption from "./strategies/singleOption";
 import solveSingleParam from "./strategies/singleParam";
 import solveBoxNarrow from "./strategies/boxNarrow";
@@ -116,7 +114,7 @@ export const applyStratsUntilDone = (applyStratsCurried = applyStrats()) =>
   (sudokuGrid, solutionList = [], round = 1) => {
     // recursively transform until no further transformations available - multi sweep
     if (isComplete(sudokuGrid)) {
-      return {updatedGrid: sudokuGrid, solutions: solutionList};
+      return {updatedGrid: sudokuGrid, solutions: solutionList, solved: true};
     }
     const currentSolution = filterBest(applyStratsCurried(sudokuGrid));
     if (currentSolution === false) {
@@ -131,25 +129,3 @@ export const applyStratsUntilDone = (applyStratsCurried = applyStrats()) =>
   const updatedGrid = applySolution(sudokuGrid, currentSolution);
   return applyStratsUntilDone(applyStratsCurried)(updatedGrid, [...solutionList, solutionWithRound].flat(), round + 1 );
 };
-
-
-
-// checks that all cells of grid have answers
-// but doesn't check for correct answers
-export function isComplete(sudokuGrid) {
-  return sudokuGrid.every(x => typeof x === "number" && x !== 0);
-}
-  
-// checks that all current answers don't cause conflicts
-// does not check that all are answered or will be correct in a full grid
-export function correctSoFar(sudokuGrid) {
-  const currentAnswerSets = CP.allSets.map(set => getSolved(set, sudokuGrid)
-  .map(x => sudokuGrid[x]) );
-  
-  return currentAnswerSets.every(set => 
-    set.length === [...new Set(set)].length && !set.includes(0));
-}
-  
-// checks grid is complete and correct
-export const completeAndCorrect = sudokuGrid => 
-  isComplete(sudokuGrid) && correctSoFar(sudokuGrid);

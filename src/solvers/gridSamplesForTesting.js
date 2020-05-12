@@ -3,11 +3,13 @@ import { formatGrid } from "./cellPath";
 // This file stores various sudoku grids for testing different strategies and functions
 
 // Invalid grids
+export const wrongDataType = ["I'm an array when I should be a string!"];
 export const gridStringTooShort = "123456789";
 export const gridStringNotEnoughAnswers = "123456789123456000000000000000000000000000000000000000000000000000000000000000000";
 export const gridStringWithLetters = "A30070000600195000098000060800060003400803001700020006060000280000419005000080079";
 export const gridStringWithContradictions = "550070000600195000098000060800060003400803001700020006060000280000419005000080079";
-//export const gridStringHiddenError = "";
+export const gridWithContradictions = formatGrid(gridStringWithContradictions);
+export const gridStringHiddenError = "130070000600195000098000060800060003400803001700020006060000280000419005000080079";
 const unansweredGridString = "000000000000000000000000000000000000000000000000000000000000000000000000000000000";
 export const unansweredGrid = formatGrid(unansweredGridString);
 const incorrectGridString1 = "990000000002000000003000000004000000005000000006000000007000000008000000001000000";
@@ -97,7 +99,7 @@ const jellyfishGridString2 = "00000000007003092001902563000400021000000000005709
 export const jellyfishGrid2 = formatGrid(jellyfishGridString2);
 
 // chains
-const xChainGridString = "270060540050127080000400270000046752027508410500712908136274895785001024002000107";
+export const xChainGridString = "270060540050127080000400270000046752027508410500712908136274895785001024002000107";
 export const xChainGrid = formatGrid(xChainGridString);
 
 // applyStrats

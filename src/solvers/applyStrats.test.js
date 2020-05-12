@@ -2,10 +2,7 @@ import { assert } from "chai";
 import {
     applyStrats,
     limitStratsTo,
-    applyStratsUntilDone,
-    isComplete,
-    correctSoFar,
-    completeAndCorrect
+    applyStratsUntilDone
 } from "./applyStrats";
 import {
     basicPuzzleGrid,
@@ -15,9 +12,7 @@ import {
     XWingGrid3,
     XWingGrid3Answer,
     swordfishGrid1,
-    swordfishGrid3,
-    incorrectGrid2,
-    incorrectGrid
+    swordfishGrid3
 } from "./gridSamplesForTesting";
 
 describe("Apply singleParam-focused solution to multiple params", function() {
@@ -27,25 +22,6 @@ describe("Apply singleParam-focused solution to multiple params", function() {
 
         const cellsFound = solutionList.map(x => x.cellInit);
         assert.sameMembers(cellsFound, [40,59,62,70])
-    });
-});
-describe("Check that sudokuGrid is complete and correct", function() {
-    it("complete", function() {
-        assert.equal(isComplete(basicPuzzleAnswer), true);
-        assert.equal(isComplete(basicPuzzleGrid), false);
-        assert.equal(isComplete(incorrectGrid2), false);
-    });
-    it("correct", function() {
-        assert.equal(correctSoFar(basicPuzzleAnswer), true);
-        assert.equal(correctSoFar(basicPuzzleGrid), true);
-        assert.equal(correctSoFar(incorrectGrid2), false);
-        assert.equal(correctSoFar(incorrectGrid), false);
-    });
-    it("complete and correct", function() {
-        assert.equal(completeAndCorrect(basicPuzzleAnswer), true);
-        assert.equal(completeAndCorrect(basicPuzzleGrid), false);
-        assert.equal(completeAndCorrect(incorrectGrid2), false);
-        assert.equal(completeAndCorrect(incorrectGrid), false);
     });
 });
 describe("Apply series of strategies to grid", function() {
@@ -99,6 +75,5 @@ describe("Apply series of strategies to grid", function() {
         // test puzzle with swordfish strategy
         const swordfishResult = stratCycle(swordfishGrid3);
         assert.isTrue(swordfishResult.solutions.map(x => x.strategy).includes("Swordfish"));
-        assert.equal(isComplete(swordfishResult.updatedGrid), false);
     });
 })

@@ -172,11 +172,11 @@ describe("Generate Solution Object", function() {
         const bestXChain = filterBest(xChainFullGridAnswer);
 
         assert.equal(xChainFullGridAnswer.length, 12);
-        const totalRoundsFound = [...new Set(xChainFullGridAnswer.map(x => x.totalRounds))];
+        const totalRoundsFound = [...new Set(xChainFullGridAnswer.map(x => x.totalChainRounds))];
         assert.sameMembers(totalRoundsFound, [1,2,3,4]);
 
         assert.equal([].concat(bestXChain).length, 1);
-        assert.equal(bestXChain.totalRounds, 1);
+        assert.equal(bestXChain.totalChainRounds, 1);
         });
         
     });
@@ -195,8 +195,8 @@ describe("Generate Solution Object", function() {
             const xChainFullGridAnswer = solveXChainFullGrid(xChainGrid);
             const sortedXChainAnswers = sortBest(xChainFullGridAnswer);
 
-            const unsortedTotalRounds = [...new Set(xChainFullGridAnswer.map(x => x.totalRounds))];
-            const sortedTotalRounds = [...new Set(sortedXChainAnswers.map(x => x.totalRounds))];
+            const unsortedTotalRounds = [...new Set(xChainFullGridAnswer.map(x => x.totalChainRounds))];
+            const sortedTotalRounds = [...new Set(sortedXChainAnswers.map(x => x.totalChainRounds))];
 
             assert.sameOrderedMembers(unsortedTotalRounds, [3,2,1,4]);
             assert.sameOrderedMembers(sortedTotalRounds, [1,2,3,4]);
