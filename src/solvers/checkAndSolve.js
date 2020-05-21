@@ -7,7 +7,7 @@ const checkAndSolve = gridString => {
         return confirmValid;
     } else {
         const attempt = solveWithStandardOptions(confirmValid.formattedGrid);
-        const strategiesUsed = attempt.solutions.map(x => x.strategy);
+        const strategiesUsed = [...new Set(attempt.solutions.map(x => x.strategy))];
         return {
             ...attempt,
             strategiesUsed,
